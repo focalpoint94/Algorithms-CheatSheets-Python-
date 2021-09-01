@@ -5,7 +5,8 @@ def getPi(pattern):
         while j > 0 and pattern[i] != pattern[j]:
             j = pi[j-1]
         if pattern[i] == pattern[j]:
-            pi[i] = ++j
+            j += 1
+            pi[i] = j
     return pi
 
 
