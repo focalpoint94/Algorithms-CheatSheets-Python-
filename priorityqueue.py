@@ -8,7 +8,7 @@ class PriorityQueue:
     def insert(self, elem):
         heapq.heappush(self.pq, -elem)
 
-    def getmax(self):
+    def gettop(self):
         return -self.pq[0]
 
     def remove(self, elem):
@@ -19,3 +19,6 @@ class PriorityQueue:
                 heapq.heappop(self.removals)
         else:
             heapq.heappush(self.removals, -elem)
+
+    def length(self):
+        return len(self.pq)
