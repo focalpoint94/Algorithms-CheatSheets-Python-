@@ -24,38 +24,38 @@ class SegmentTree:
     """
     l, r each means the start and the end of the range
     """
-    def _query(self, node, l, r):
+    def query(self, node, l, r):
         if node.start == l and node.end == r:
             return node.val
         mid = node.mid
         if r <= mid:
-            return self._query(node.left, l, r)
+            return self.query(node.left, l, r)
         elif l > mid:
-            return self._query(node.right, l, r)
+            return self.query(node.right, l, r)
         else:
-            return self._query(node.left, l, mid) + self._query(node.right, mid+1, r)
+            return self.query(node.left, l, mid) + self.query(node.right, mid+1, r)
 
     """
     idx: the index that should be changed
     diff: new value - old value
     """
-    def _update(self, node, idx, diff):
+    def update(self, node, idx, diff):
         if node.start == node.end:
             node.val += diff
             self.nums[idx] += diff
             return
         mid = node.mid
         if idx <= mid:
-            self._update(node.left, idx, diff)
+            self.update(node.left, idx, diff)
         else:
-            self._update(node.right, idx, diff)
+            self.update(node.right, idx, diff)
         node.val += diff
 
 
 
 nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 tree = SegmentTree(nums)
-tree._update(tree.root, 0, 9)
-print(tree._query(tree.root, 0, 5))
-tree._update(tree.root, 3, 17)
-print(tree._query(tree.root, 0, 5))
+tree.update(tree.root, 0, 9)
+print(tree.query(tree.root, 0, 5))
+tree.update(tree.root, 3, 17)
+print(tree.query(tree.root, 0, 5))
