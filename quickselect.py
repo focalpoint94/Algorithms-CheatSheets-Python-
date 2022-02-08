@@ -13,7 +13,7 @@ class Solution:
         return nums[low]
         
     def partition(self, nums, low, high):
-        rand_idx = random.randint(low, high) if low != high else low
+        rand_idx = random.randint(low, high)
         # swap nums[high] and nums[rand_idx]
         nums[high], nums[rand_idx] = nums[rand_idx], nums[high]
         pivot = nums[high]
