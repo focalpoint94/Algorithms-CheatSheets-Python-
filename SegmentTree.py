@@ -1,61 +1,61 @@
 class SegmentTreeNode:
-    def __init__(self, val, start, end, left=None, right=None):
-        self.val = val
+
+    def __init__(self, start, end, val, left=None, right=None):
         self.start = start
         self.end = end
+        self.mid = (start + end) // 2
+        self.val = val
         self.left = left
         self.right = right
-        self.mid = (start + end) // 2
 
 
 class SegmentTree:
+
     def __init__(self, nums):
         self.nums = nums
         self.root = self._build(0, len(nums)-1)
 
     def _build(self, start, end):
         if start == end:
-            return SegmentTreeNode(self.nums[start], start, end)
+            return SegmentTreeNode(start, end, self.nums[start])
         mid = (start + end) // 2
         left = self._build(start, mid)
         right = self._build(mid+1, end)
-        return SegmentTreeNode(left.val+right.val, start, end, left, right)
+        return SegmentTreeNode(start, end, left.val+right.val, left, right)
 
-    """
-    l, r each means the start and the end of the range
-    """
-    def query(self, node, l, r):
-        if node.start == l and node.end == r:
+    def query(self, ql, qr):
+        return self._query(self.root, ql, qr)
+
+    def _query(self, node, ql, qr):
+        if node.start == ql and node.end == qr:
             return node.val
         mid = node.mid
-        if r <= mid:
-            return self.query(node.left, l, r)
-        elif l > mid:
-            return self.query(node.right, l, r)
-        else:
-            return self.query(node.left, l, mid) + self.query(node.right, mid+1, r)
+        if qr <= mid:
+            return self._query(node.left, ql, qr)
+        if ql > mid:
+            return self._query(node.right, ql, qr)
+        return self._query(node.left, ql, mid) + self._query(node.right, mid+1, qr)
 
-    """
-    idx: the index that should be changed
-    diff: new value - old value
-    """
-    def update(self, node, idx, diff):
+    def update(self, idx, val):
+        delta = val - self.nums[idx]
+        self.nums[idx] = val
+        self._update(self.root, idx, delta)
+
+    def _update(self, node, idx, delta):
         if node.start == node.end:
-            node.val += diff
-            self.nums[idx] += diff
+            node.val += delta
             return
+        node.val += delta
         mid = node.mid
         if idx <= mid:
-            self.update(node.left, idx, diff)
+            self._update(node.left, idx, delta)
         else:
-            self.update(node.right, idx, diff)
-        node.val += diff
-
+            self._update(node.right, idx, delta)
 
 
 nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 tree = SegmentTree(nums)
-tree.update(tree.root, 0, 9)
-print(tree.query(tree.root, 0, 5))
-tree.update(tree.root, 3, 17)
-print(tree.query(tree.root, 0, 5))
+tree.update(0, 9)
+print(tree.query(0, 5))
+tree.update(3, 17)
+print(tree.query(0, 5))
