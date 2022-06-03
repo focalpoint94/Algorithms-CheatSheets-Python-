@@ -1,47 +1,60 @@
+import math
+class SegmentTree:
+
+    def __init__(self, nums):
+        self.tree = [0] * pow(2,math.ceil(math.log(len(nums),2))+1)
+        self.nums = nums
+        self._build(node=1, start=0, end=len(nums)-1)
+
+    def _build(self, node, start, end):
+        if start == end:
+            self.tree[node] = self.nums[start]
+            return self.tree[node]
+        mid = (start + end) // 2
+        self.tree[node] = self._build(node*2, start, mid) + self._build(node*2+1, mid+1, end)
+        return self.tree[node]
+
+    def query(self, ql, qr):
+        return self._query(1, 0, len(self.nums)-1, ql, qr)
+
+    def _query(self, node, start, end, ql, qr):
+        if start == ql and end == qr:
+            return self.tree[node]
+        mid = (start + end) // 2
+        if qr <= mid:
+            return self._query(node*2, start, mid, ql, qr)
+        if ql > mid:
+            return self._query(node*2+1, mid+1, end, ql, qr)
+        return self._query(node*2, start, mid, ql, mid) + self._query(node*2+1, mid+1, end, mid+1, qr)
+
+    def update(self, idx, val):
+        delta = val - self.nums[idx]
+        self.nums[idx] = val
+        self._update(1, 0, len(self.nums)-1, idx, delta)
+
+    def _update(self, node, start, end, idx, delta):
+        if start == end:
+            self.tree[node] += delta
+            return
+        self.tree[node] += delta
+        mid = (start + end) // 2
+        if idx <= mid:
+            self._update(node*2, start, mid, idx, delta)
+        else:
+            self._update(node*2+1, mid+1, end, idx, delta)
+    
+
+
 class NumArray:
 
     def __init__(self, nums: List[int]):
-        self.nums = nums
-        self.size = len(nums)
-        self.tree = [0] * pow(2,math.ceil(math.log(self.size,2))+1)
-        self.build(node=1, left=0, right=self.size-1)
-    
-    def build(self, node, left, right):
-        if left == right:
-            self.tree[node] = self.nums[left]
-            return self.tree[node]
-        mid = (left + right) // 2
-        self.tree[node] = self.build(node*2, left, mid) + self.build(node*2+1, mid+1, right)
-        return self.tree[node]
-    
+        self.tree = SegmentTree(nums)
+
     def update(self, index: int, val: int) -> None:
-        self._update(index, val-self.nums[index], node=1, left=0, right=self.size-1)
-        self.nums[index] = val
-        
-    def _update(self, index, diff, node, left, right):
-        if left == right:
-            self.tree[node] += diff
-            return
-        self.tree[node] += diff
-        mid = (left + right) // 2
-        if index <= mid:
-            self._update(index, diff, node*2, left, mid)
-        else:
-            self._update(index, diff, node*2+1, mid+1, right)
+        self.tree.update(index, val)
 
     def sumRange(self, left: int, right: int) -> int:
-        return self._query(left, right, node=1, left=0, right=self.size-1)
-        
-    def _query(self, ql, qr, node, left, right):
-        if ql == left and qr == right:
-            return self.tree[node]
-        mid = (left + right) // 2
-        if qr <= mid:
-            return self._query(ql, qr, node*2, left, mid)
-        elif ql >= mid + 1:
-            return self._query(ql, qr, node*2+1, mid+1, right)
-        return self._query(ql, mid, node*2, left, mid) + self._query(mid+1, qr, node*2+1, mid+1, right)
-        
+        return self.tree.query(left, right)
 
 
 # Your NumArray object will be instantiated and called as such:
