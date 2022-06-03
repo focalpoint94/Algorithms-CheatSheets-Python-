@@ -3,7 +3,7 @@ class NumArray:
     def __init__(self, nums: List[int]):
         self.nums = nums
         self.size = len(nums)
-        self.tree = [0] * (self.size * 4)
+        self.tree = [0] * pow(2,math.ceil(math.log(self.size,2))+1)
         self.build(node=1, left=0, right=self.size-1)
     
     def build(self, node, left, right):
