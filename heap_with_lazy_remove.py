@@ -1,5 +1,6 @@
 import heapq
 
+
 class MyHeap:
     def __init__(self, type='min'):
         self.heap = []
@@ -23,6 +24,10 @@ class MyHeap:
                 heapq.heappop(self.removals)
         else:
             heapq.heappush(self.removals, self.sign * elem)
+
+    def top(self):
+        return self.heap[0]
+    
 
 # import heapq
 
