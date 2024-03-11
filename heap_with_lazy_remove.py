@@ -1,6 +1,28 @@
 import heapq
 
+### Simplest Version
+class MyHeap:
+    def __init__(self):
+        self.heap = []
+        self.removals = []
 
+    def insert(self, val):
+        heapq.heappush(self.heap, val)
+
+    def remove(self, val):
+        if not self.heap:
+            return
+
+        if self.heap[0] == val:
+            heapq.heappop(self.heap)
+            while self.removals and self.heap[0] == self.removals[0]:
+                heapq.heappop(self.heap)
+                heapq.heappop(self.removals)
+        else:
+            heapq.heappush(self.removals, val)
+
+
+### Min and Max
 class MyHeap:
     def __init__(self, type='min'):
         self.heap = []
