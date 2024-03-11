@@ -16,7 +16,7 @@ def rotate_matrix_by_minus_90_degree(matrix):
     result = [[0] * row_length for _ in range(column_length)]
     for r in range(row_length):
         for c in range(column_length):
-            result[row_length - c][r] = matrix[r][c]
+            result[column_length -1 -c][r] = matrix[r][c]
 
     return result
 
